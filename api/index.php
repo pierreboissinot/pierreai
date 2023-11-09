@@ -90,12 +90,12 @@ $payload = json_encode(buildPayload(
     ]
 ), JSON_PRETTY_PRINT);
 
-var_dump($payload);
+// var_dump($payload);
 
 // Call the model with functions and the user’s input
 $response = handleOpenAiRequest("/chat/completions", "POST", $payload);
 
-var_dump($response);
+// var_dump($response);
 
 // TODO: handle http response status, response body etc.
 
@@ -125,9 +125,15 @@ $secondPayload = json_encode(buildPayload(
     ]
 ), JSON_PRETTY_PRINT);
 
-var_dump($secondPayload);
+// var_dump($secondPayload);
 
 // Call the model with functions and the user’s input
 $secondResponse = handleOpenAiRequest("/chat/completions", "POST", $secondPayload);
 
-var_dump($secondResponse);
+// var_dump($secondResponse);
+
+$data = json_decode($secondResponse, true);
+
+echo $data['choices']['0']['message']['content'];
+
+// var_dump($secondResponse);
