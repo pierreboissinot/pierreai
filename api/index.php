@@ -4,7 +4,7 @@
 
 // TODO: handle rate limit ? sleep ?
 
-require 'gitlab_functions.php';
+include 'functions/gitlab_functions.php';
 
 const gptModel = 'gpt-3.5-turbo-1106'; // supports parallels functions calling
 
