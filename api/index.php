@@ -6,6 +6,12 @@ require_once 'functions/gitlab_functions.php';
 // Requires SLACK_BOT_USER_OAUTH_TOKEN
 
 // TODO: handle rate limit ? sleep ?
+// response has to be less than 3 seconds, see headers like X-Slack-Retry-Num
+foreach (getallheaders() as $name => $value) {
+    if ('X-Slack-Retry-Num' === $name) {
+        die('this long request is already running');
+    }
+}
 
 $jsonData = file_get_contents('php://input');
 //unlink('php://input');
@@ -250,6 +256,9 @@ $slackResponse = $data['choices']['0']['message']['content'];
 // callbackSlack($_POST['response_url'], json_encode($slackResponse));
 
 slackReplyInThread($channel, $eventTs, $slackResponse);
+
+
+die('fin');
 
 //echo json_encode($slackResponse);
 
