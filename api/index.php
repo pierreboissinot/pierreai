@@ -134,6 +134,11 @@ $secondResponse = handleOpenAiRequest("/chat/completions", "POST", $secondPayloa
 
 $data = json_decode($secondResponse, true);
 
-echo $data['choices']['0']['message']['content'];
+$slackResponse = [
+    "response_type" => "in_channel",
+    "text" => $data['choices']['0']['message']['content'],
+];
+
+echo json_encode($slackResponse);
 
 // var_dump($secondResponse);
