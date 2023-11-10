@@ -90,7 +90,7 @@ ob_end_flush();
 echo "Un instant svp ...";
 
 // TODO: get user input
-$userInput = "Quelles sont les MR à relire concernant la branche s47 ?";
+$userInput = $_POST['text'];// example: "Quelles sont les MR à relire concernant la branche s47 ?";
 
 $payload = json_encode(buildPayload(
     [
