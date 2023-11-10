@@ -81,6 +81,14 @@ function buildPayload(array $messages): array {
     ];
 }
 
+
+// Slack command timeout if the api does not respond in less than 3000ms
+// See https://api.slack.com/interactivity/slash-commands#responding_basic_receipt
+set_time_limit(0);
+ob_implicit_flush(1);
+ob_end_flush();
+echo "Un instant svp ...";
+
 // TODO: get user input
 $userInput = "Quelles sont les MR à relire concernant la branche s47 ?";
 
@@ -139,6 +147,36 @@ $slackResponse = [
     "text" => $data['choices']['0']['message']['content'],
 ];
 
-echo json_encode($slackResponse);
+
+function callbackSlack(string $responseUrl, string $content): void
+{
+    $url = $responseUrl;
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_FAILONERROR => false,
+        CURLOPT_POSTFIELDS => $content,
+    ));
+
+    $response = curl_exec($curl);
+
+    if (curl_errno($curl)) {
+        throw new Exception(sprintf("Error during %s %s with body \n%s\nError : %s", 'POST', $url, $content, curl_error($curl)));
+    }
+
+    curl_close($curl);
+
+    if (!is_string($response)) {
+        die(sprintf('failure %s %s', 'POST', $url));
+    }
+}
+
+
+callbackSlack($_POST['response_url'], json_encode($slackResponse));
 
 // var_dump($secondResponse);
